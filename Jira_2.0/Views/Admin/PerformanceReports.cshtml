@@ -1,0 +1,210 @@
+﻿
+@{
+    Layout = null;
+}
+
+@{
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Performance Reports</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+        <link rel="stylesheet" href="/css/dashboard.css" />
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <style>
+            body {
+                background-image: url('https://images.unsplash.com/photo-1627634777217-c864268db30c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+                background-size: cover;
+                background-position: center;
+                height: 100vh;
+                margin: 0;
+            }
+
+            .content {
+                
+                color:white;
+                margin-top:30px;
+            }
+            .input{
+                width:500px;
+                margin-left:200px;
+                margin-top:10px;
+                padding-top:20px;
+            }
+            .btndiv{
+               
+                margin-left:270px;
+            }
+            .heading{
+                margin-left: 300px;
+            }
+
+            .chart-container {
+                width: 100%;
+                height: 300px;
+            }
+            
+        </style>
+    </head>
+    <body>
+
+        <!-- Sidebar -->
+        <div class="app-wrapper">
+            @Html.Partial("_sidebar")
+            <main>
+        <!-- Content Area -->
+        <div class="content">
+            <div class="heading">
+            <h2 >Performance Reports</h2>
+            </div>
+            <form>
+                <div class="mb-3 input">
+                    
+                    <input type="text" class="form-control" id="userId" placeholder="UserID">
+                </div>
+                <div class="btndiv d-flex gap-5">
+                <button type="submit" id="reportForm"class="btn btn-primary">Generate Report</button>
+                <button type="submit" id="pdf"class="btn btn-primary">Generate PDF</button>
+                </div>
+            </form>
+                    <div id="reportSection" class="mt-4" style="display: none;">
+                        <!-- User Contribution -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-info text-white">
+                                <h5>User Contribution</h5>
+                            </div>
+                            <div class="card-body" style="background-color:darkorchid">
+                                <p><strong>User Name:</strong> <span id="userName">John Doe</span></p>
+                                <p><strong>Issues Reported:</strong> <span id="issuesReported">12</span></p>
+                                <p><strong>Issues Resolved:</strong> <span id="issuesResolved">8</span></p>
+                                <p><strong>Pending Issues:</strong> <span id="pendingIssues">4</span></p>
+                            </div>
+                        </div>
+
+                        <!-- Contribution Graph -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-success text-white">
+                                <h5>Contribution Chart</h5>
+                            </div>
+                            <div class="card-body" style="background-color:darkblue;color:white">
+                                <canvas id="contributionChart" class="chart-container"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Activity Log -->
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-warning" style="color:white">
+                                <h5>Recent Activity</h5>
+                            </div>
+                            <div class="card-body" style="background-color:deeppink;color:white">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Action</th>
+                                            <th>Issue ID</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="activityLog">
+                                        <tr>
+                                            <td>2025-03-20</td>
+                                            <td>Resolved an issue</td>
+                                            <td>#101</td>
+                                        </tr>
+                                        <tr>
+                                            <td>2025-03-18</td>
+                                            <td>Commented on an issue</td>
+                                            <td>#98</td>
+                                        </tr>
+                                        <tr>
+                                            <td>2025-03-15</td>
+                                            <td>Created a new issue</td>
+                                            <td>#95</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+        </div>
+        </main>
+        </div>
+        <script>
+            // Store chart instance globally
+            let contributionChart = null;
+
+            document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById("reportForm").addEventListener("click", function (event) {
+                    event.preventDefault();
+                    document.getElementById("reportSection").style.display = "block";
+
+                    // Example data - Replace with backend data
+                    let userId = document.getElementById("userId").value;
+                    let userName = userId === "101" ? "Alice Smith" : "John Doe";
+                    let issuesReported = userId === "101" ? 15 : 12;
+                    let issuesResolved = userId === "101" ? 10 : 8;
+                    let pendingIssues = userId === "101" ? 5 : 4;
+
+                    // Update text elements
+                    document.getElementById("userName").textContent = userName;
+                    document.getElementById("issuesReported").textContent = issuesReported;
+                    document.getElementById("issuesResolved").textContent = issuesResolved;
+                    document.getElementById("pendingIssues").textContent = pendingIssues;
+
+                    // Update Chart - destroy old one first if exists
+                    if (contributionChart) {
+                        contributionChart.destroy();
+                    }
+                    renderChart(issuesReported, issuesResolved, pendingIssues);
+                });
+
+                function renderChart(reported, resolved, pending) {
+                    let ctx = document.getElementById("contributionChart").getContext("2d");
+
+                    contributionChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ["Issues Reported", "Issues Resolved", "Pending Issues"],
+                            datasets: [{
+                                label: 'Issue Count',
+                                data: [reported, resolved, pending],
+                                backgroundColor: [
+                                    'rgba(54, 162, 235, 0.7)',
+                                    'rgba(75, 192, 192, 0.7)',
+                                    'rgba(255, 99, 132, 0.7)'
+                                ],
+                                borderColor: [
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(255, 99, 132, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        color: 'white'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        </script>
+    </body>
+    </html>
+
+}

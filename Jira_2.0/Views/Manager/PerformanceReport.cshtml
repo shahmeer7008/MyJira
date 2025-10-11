@@ -1,0 +1,172 @@
+﻿
+@{
+    Layout = null;
+}
+@{
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Performance Report</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link rel="stylesheet" href="/css/dashboard.css" />
+        <style>
+            body {
+                display: flex;
+                background-image: url('https://images.unsplash.com/photo-1627634777217-c864268db30c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+                background-size: cover;
+                background-position: center;
+                height: 100vh;
+                margin: 0;
+            }
+           
+            .form-label {
+                font-weight: bold;
+            }
+            .chart-container {
+                width: 100%;
+                height: 300px;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Sidebar -->
+        <div class="app-wrapper">
+            @Html.Partial("_ManagerSidebar")
+
+            <main class="app-main">
+
+        <!-- Main Content -->
+        <div class="content" style="margin-left:250px; color:white">
+            <h2 class="mb-4">Generate Performance Report</h2>
+
+            <!-- User ID Input -->
+            <div class="card shadow-sm" >
+                <div class="card-header bg-primary text-white">
+                    <h5>Enter User ID</h5>
+                </div>
+                        <div class="card-body" style="color:white; background-color:darkgoldenrod">
+                    <form id="reportForm">
+                        <div class="mb-3">
+                            <label for="userId" class="form-label">User ID</label>
+                            <input type="text" class="form-control" id="userId" placeholder="Enter User ID" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Generate Report</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Performance Report Section -->
+            <div id="reportSection" class="mt-4" style="display: none;">
+                <!-- User Contribution -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h5>User Contribution</h5>
+                    </div>
+                            <div class="card-body" style="background-color:darkorchid">
+                        <p><strong>User Name:</strong> <span id="userName">John Doe</span></p>
+                        <p><strong>Issues Reported:</strong> <span id="issuesReported">12</span></p>
+                        <p><strong>Issues Resolved:</strong> <span id="issuesResolved">8</span></p>
+                        <p><strong>Pending Issues:</strong> <span id="pendingIssues">4</span></p>
+                    </div>
+                </div>
+
+                <!-- Contribution Graph -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5>Contribution Chart</h5>
+                    </div>
+                            <div class="card-body" style="background-color:darkblue;color:white">
+                        <canvas id="contributionChart" class="chart-container"></canvas>
+                    </div>
+                </div>
+
+                <!-- Activity Log -->
+                <div class="card shadow-sm">
+                            <div class="card-header bg-warning" style="color:white">
+                        <h5>Recent Activity</h5>
+                    </div>
+                            <div class="card-body" style="background-color:deeppink;color:white">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                    <th>Issue ID</th>
+                                </tr>
+                            </thead>
+                            <tbody id="activityLog">
+                                <tr>
+                                    <td>2025-03-20</td>
+                                    <td>Resolved an issue</td>
+                                    <td>#101</td>
+                                </tr>
+                                <tr>
+                                    <td>2025-03-18</td>
+                                    <td>Commented on an issue</td>
+                                    <td>#98</td>
+                                </tr>
+                                <tr>
+                                    <td>2025-03-15</td>
+                                    <td>Created a new issue</td>
+                                    <td>#95</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </main>
+        </div>
+        <script>
+            document.getElementById("reportForm").addEventListener("submit", function(event) {
+                event.preventDefault();
+                document.getElementById("reportSection").style.display = "block";
+
+                // Example data - Replace with backend data
+                let userId = document.getElementById("userId").value;
+                document.getElementById("userName").innerText = userId === "101" ? "Alice Smith" : "John Doe";
+                document.getElementById("issuesReported").innerText = userId === "101" ? "15" : "12";
+                document.getElementById("issuesResolved").innerText = userId === "101" ? "10" : "8";
+                document.getElementById("pendingIssues").innerText = userId === "101" ? "5" : "4";
+
+                // Update Chart
+                updateChart(userId);
+            });
+
+            function updateChart(userId) {
+                let reported = userId === "101" ? 15 : 12;
+                let resolved = userId === "101" ? 10 : 8;
+                let pending = userId === "101" ? 5 : 4;
+
+                let ctx = document.getElementById("contributionChart").getContext("2d");
+                new Chart(ctx, {
+                    type: "bar",
+                    data: {
+                        labels: ["Issues Reported", "Issues Resolved", "Pending Issues"],
+                        datasets: [{
+                            label: "Issue Data",
+                            data: [reported, resolved, pending],
+                            backgroundColor: ["blue", "green", "red"]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+        </script>
+
+    </body>
+    </html>
+
+}

@@ -1,0 +1,155 @@
+﻿
+@{
+    Layout = null;
+}
+@{
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Report</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link rel="stylesheet" href="/css/dashboard.css" />
+    <style>
+            body {
+                display: flex;
+                background-image: url('https://images.unsplash.com/photo-1627634777217-c864268db30c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+                background-size: cover;
+                background-position: center;
+                height: 100vh;
+                margin: 0;
+            }
+       
+        .form-label {
+            font-weight: bold;
+        }
+        .chart-container {
+            width: 100%;
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+        <div class="app-wrapper">
+            @Html.Partial("_ManagerSidebar")
+
+            <main class="app-main">
+
+    <!-- Main Content -->
+                <div class="content" style="margin-left:250px; color:white">
+        <h2 class="mb-4">Generate Project Report</h2>
+
+        <!-- Project Selection -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5>Select Project</h5>
+            </div>
+                        <div class="card-body" style="color:white ;background-color:darkgoldenrod">
+                <form id="reportForm">
+                    <div class="mb-3">
+                        <label for="projectId" class="form-label">Project</label>
+                        <select class="form-select" id="projectId">
+                            <option value="P101">Project Alpha</option>
+                            <option value="P102">Project Beta</option>
+                            <option value="P103">Project Gamma</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success">Generate Report</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Project Report Section -->
+        <div id="reportSection" class="mt-4" style="display: none;">
+            <!-- Project Summary -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5>Project Overview</h5>
+                </div>
+                            <div class="card-body" style="color:white; background-color:darkorchid">
+                    <p><strong>Project Name:</strong> <span id="projectName">Project Alpha</span></p>
+                    <p><strong>Total Issues:</strong> <span id="totalIssues">50</span></p>
+                    <p><strong>Resolved Issues:</strong> <span id="resolvedIssues">40</span></p>
+                    <p><strong>Pending Issues:</strong> <span id="pendingIssues">10</span></p>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5>Project Progress</h5>
+                </div>
+                            <div class="card-body" style="color:white ;background-color:darkolivegreen">
+                    <div class="progress" style="height: 30px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" id="progressBar" style="width: 80%;">80%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Status Graph -->
+            <div class="card shadow-sm">
+                            <div class="card-header bg-warning" style="color:white;background-color:fuchsia">
+                    <h5>Issue Breakdown</h5>
+                </div>
+                            <div class="card-body" style="color:white;background-color:darkblue">
+                    <canvas id="projectChart" class="chart-container"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    </main>
+    </div>
+    <script>
+        document.getElementById("reportForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            document.getElementById("reportSection").style.display = "block";
+
+            // Example data - Replace with backend data
+            let projectId = document.getElementById("projectId").value;
+            let projectData = {
+                "P101": { name: "Project Alpha", total: 50, resolved: 40, pending: 10, progress: 80 },
+                "P102": { name: "Project Beta", total: 70, resolved: 50, pending: 20, progress: 72 },
+                "P103": { name: "Project Gamma", total: 90, resolved: 60, pending: 30, progress: 66 }
+            };
+
+            let data = projectData[projectId];
+            document.getElementById("projectName").innerText = data.name;
+            document.getElementById("totalIssues").innerText = data.total;
+            document.getElementById("resolvedIssues").innerText = data.resolved;
+            document.getElementById("pendingIssues").innerText = data.pending;
+
+            // Update Progress Bar
+            let progressBar = document.getElementById("progressBar");
+            progressBar.style.width = data.progress + "%";
+            progressBar.innerText = data.progress + "%";
+
+            // Update Chart
+            updateChart(data);
+        });
+
+        function updateChart(data) {
+            let ctx = document.getElementById("projectChart").getContext("2d");
+            new Chart(ctx, {
+                type: "pie",
+                data: {
+                    labels: ["Resolved Issues", "Pending Issues"],
+                    datasets: [{
+                        data: [data.resolved, data.pending],
+                        backgroundColor: ["green", "red"]
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
+
+}

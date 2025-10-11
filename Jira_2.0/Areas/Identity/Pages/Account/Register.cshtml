@@ -1,0 +1,142 @@
+﻿@page
+@model RegisterModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Jira 2.0</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('https://images.unsplash.com/photo-1627634777217-c864268db30c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 700px;
+            width: 100%;
+            margin: 20px;
+        }
+
+        @@keyframes slideIn {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .slide-in-form {
+            animation: slideIn 1s ease-out;
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="content slide-in-form">
+        <h2 class="text-center text-primary mb-4">Create Your Account</h2>
+
+        <form asp-route-returnUrl="@Model.ReturnUrl" method="post" id="registerForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+            <div class="form-group">
+                <label asp-for="Input.Name" class="form-label">Name</label>
+                <input asp-for="Input.Name" class="form-control" placeholder="Enter your Name" autocomplete="name" />
+                <span asp-validation-for="Input.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Email" class="form-label">Email</label>
+                <input asp-for="Input.Email" class="form-control" placeholder="Enter your email" autocomplete="username" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Role"></label>
+                <select asp-for="Input.Role" class="form-control">
+                    <option value="TeamMember">Team Member</option>
+                    <option value="ProjectManager">Project Manager</option>
+                </select>
+                <span asp-validation-for="Input.Role" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Password" class="form-label">Password</label>
+                <input asp-for="Input.Password" class="form-control" placeholder="Create a password" autocomplete="new-password" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.ConfirmPassword" class="form-label">Confirm Password</label>
+                <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Confirm your password" autocomplete="new-password" />
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="terms" required />
+                <label class="form-check-label" for="terms">
+                    I agree to the <a href="#">terms and conditions</a>
+                </label>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col">
+                    <button type="submit" id="signupBtn"class="btn btn-primary w-100">Sign Up</button>
+                </div>
+                <div class="col text-right">
+                    <a href="@Url.Page("./Login", new { ReturnUrl = Model.ReturnUrl })" class="btn btn-link">Already have an account?</a>
+                </div>
+            </div>
+        </form>
+
+        @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+        {
+            <hr />
+            <h5 class="text-center">Or sign up with</h5>
+            <div class="d-flex justify-content-center">
+                <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                    @foreach (var provider in Model.ExternalLogins!)
+                    {
+                        <button type="submit" class="btn btn-outline-primary mx-2" name="provider" value="@provider.Name">
+                            @provider.DisplayName
+                        </button>
+                    }
+                </form>
+            </div>
+        }
+    </div>
+    @section Scripts {
+        <script>
+            document.getElementById('signupBtn').addEventListener('click', function (event) {
+                event.preventDefault(); // Stop form from submitting
+
+                alert("Your registration request has been sent. Once approved, you'll be able to log in.");
+
+                // Now submit the form after alert is closed
+                document.getElementById('registerForm').submit();
+            });
+        </script>
+    }
+
+
+    <partial name="_ValidationScriptsPartial" />
+</body>
+</html>

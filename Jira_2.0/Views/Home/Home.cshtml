@@ -1,0 +1,70 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Jira</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('https://images.unsplash.com/photo-1627634777217-c864268db30c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .welcome-box {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 700px;
+            animation: fadeIn 1.2s ease-in-out;
+        }
+
+        h1 {
+            color: #007bff;
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        .btn-custom {
+            margin: 10px;
+            min-width: 120px;
+        }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-box">
+        <h1>Welcome to Jira</h1>
+        <p>Manage your projects effortlessly with Jira 2.0 – your smart, agile-friendly platform for planning, tracking, and collaboration.</p>
+        <div class="mt-4">
+            <a href="~/Identity/Account/Login" class="btn btn-primary btn-custom">Login</a>
+            <a href="~/Identity/Account/Register" class="btn btn-outline-primary btn-custom">Sign Up</a>
+        </div>
+    </div>
+</body>
+</html>

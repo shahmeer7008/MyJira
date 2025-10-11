@@ -1,0 +1,6 @@
+services:
+  jira_2.0:
+    image: ${DOCKER_REGISTRY-}jira20
+    build:
+      context: .
+      dockerfile: Jira_2.0/Dockerfile

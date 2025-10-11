@@ -1,0 +1,307 @@
+﻿@model List<Jira_2._0.Models.IssueModelWrapper>
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assigned Issues</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/dashboard.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: url('https://images.unsplash.com/photo-1627634777217-c864268db30c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+        }
+
+        .wrapper {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 100;
+            background: #343a40;
+            color: white;
+        }
+
+        .content {
+            flex: 1;
+            margin-left: 30px;
+            padding: 20px;
+            color: white;
+            backdrop-filter: blur(5px);
+            min-height: 100vh;
+        }
+
+        .badge {
+            font-size: 14px;
+            padding: 6px 10px;
+        }
+
+        .priority-high {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .priority-medium {
+            color: #ffc107;
+            font-weight: bold;
+        }
+
+        .priority-low {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+            .popup-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+        .popup-content {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 500px;
+            color: #333;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .popup-overlay.active .popup-content {
+            transform: translateY(0);
+        }
+
+        .close-popup {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        @@media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+                min-height: auto;
+            }
+
+            .content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        @Html.Partial("_MemberSidebar")
+        <main class="content">
+            <div class="container mt-3">
+                <div class="card shadow-lg">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">📌 Assigned Issues</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered mt-3">
+                            <thead>
+                                <tr>
+                                    <th>Issue Title</th>
+                                    <th>Assigned To</th>
+                                    <th>Status</th>
+                                    <th>Priority</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var issue in Model)
+                                {
+                                    <tr>
+                                        <td>@issue.IssueData?.Title</td>
+                                        <td>@issue.IssueData?.Assigned</td>
+                                        <td>
+                                            <span class="badge bg-@GetStatusBadgeClass(issue.IssueData?.Status)">
+                                                @issue.IssueData?.Status
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="priority-@GetPriorityClass(issue.IssueData?.Priority?.ToLower())">
+                                                @issue.IssueData?.Priority
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary edit-btn" data-issue-id="@issue.IssueID">Edit</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Popup for editing issues -->
+            <div class="popup-overlay" id="editPopup">
+                <div class="popup-content">
+                    <span class="close-popup">&times;</span>
+                    <form id="editIssueForm" asp-action="AssignedIssues" asp-controller="TeamMember" method="post">
+                        <input type="hidden" name="IssueID" id="editIssueId" />
+                        <input type="hidden" name="ProjectID" id="editProjectId" />
+
+                        <h4 class="mb-4">Edit Issue</h4>
+
+                        <div class="mb-3">
+                            <label class="form-label">Title</label>
+                            <input type="text" class="form-control" name="Title" id="editTitle" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" name="Status" id="editStatus" required>
+                                <option value="Assigned">Assigned</option>
+                                <option value="InProgress">In Progress</option>
+                                <option value="Resolved">Resolved</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Priority</label>
+                            <select class="form-select" name="Priority" id="editPriority" required>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                                <option value="Critical">Critical</option>
+                            </select>
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="button" class="btn btn-secondary me-2 close-popup-btn">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Store issue data for quick access
+            const issuesData = {
+        @foreach (var issue in Model)
+        {
+            <text>
+                        '@issue.IssueID': {
+                            title: '@Html.Raw(issue.IssueData?.Title?.Replace("'", "\\'"))',
+                        status: '@issue.IssueData?.Status',
+                        priority: '@issue.IssueData?.Priority',
+                        projectId: '@issue.IssueData?.ProjectID'
+                                },
+            </text>
+        }
+                    };
+
+        // Show popup when edit button is clicked
+        $('.edit-btn').click(function () {
+            const issueId = $(this).data('issue-id');
+            const issue = issuesData[issueId];
+
+            if (issue) {
+                $('#editIssueId').val(issueId);
+                $('#editProjectId').val(issue.projectId);
+                $('#editTitle').val(issue.title);
+                $('#editStatus').val(issue.status);
+                $('#editPriority').val(issue.priority);
+
+                $('#editPopup').addClass('active');
+            }
+        });
+
+        // Close popup when X or Cancel is clicked
+        $('.close-popup, .close-popup-btn').click(function () {
+            $('#editPopup').removeClass('active');
+        });
+
+        // Close popup when clicking outside the content
+        $(document).on('click', function (e) {
+            if ($(e.target).hasClass('popup-overlay')) {
+                $('#editPopup').removeClass('active');
+            }
+        });
+
+        // Handle form submission
+        $('#editIssueForm').submit(function (e) {
+            e.preventDefault();
+
+            // You can add AJAX submission here if you prefer
+            // For now, we'll just submit the form normally
+            this.submit();
+        });
+                });
+    </script>
+</body>
+</html>
+
+@functions {
+    public string GetStatusBadgeClass(string status)
+    {
+        return status switch
+        {
+            "Assigned" => "info",
+            "InProgress" => "warning",
+            "Resolved" => "success",
+            _ => "secondary"
+        };
+    }
+
+    public string GetPriorityClass(string priority)
+    {
+        return priority switch
+        {
+            "high" => "high",
+            "medium" => "medium",
+            "low" => "low",
+            "critical" => "high", // same as high
+            _ => "low"
+        };
+    }
+}

@@ -1,0 +1,185 @@
+﻿
+@{
+    Layout = null;
+}
+@{
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Project Kanban Board</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+        <link rel="stylesheet" href="/css/dashboard.css" />
+        <style>
+            body {
+                background-image: url('https://images.unsplash.com/photo-1627634777217-c864268db30c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+                background-size: cover;
+                background-position: center;
+                height: 100vh;
+                margin: 0;
+            }
+
+            .main-content{
+                color:white;
+            }
+            .kanban-board {
+                display: flex;
+                gap: 15px;
+                overflow-x: auto;
+                padding: 20px;
+            }
+
+            .kanban-column {
+                flex: 1;
+                min-width: 250px;
+                background-color: #f8f9fa;
+                border-radius: 5px;
+                padding: 10px;
+            }
+
+                .kanban-column h5 {
+                    padding: 10px;
+                    color: #fff;
+                    margin: 0;
+                    border-radius: 5px;
+                    text-align: center;
+                }
+
+            .backlog {
+                background-color: #6c757d;
+            }
+
+            .todo {
+                background-color: #007bff;
+            }
+
+            .in-progress {
+                background-color: #17a2b8;
+            }
+
+            .done {
+                background-color: #28a745;
+            }
+
+            .kanban-card {
+                background: white;
+                border-radius: 5px;
+                padding: 10px;
+                margin-top: 10px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
+
+            .project-selection {
+              
+                margin-left: 200px;
+                padding-top:30px;
+            }
+            .input{
+                padding-top:30px;
+                width:380px;
+                margin-left:30px;
+            }
+            .btndiv{
+                margin-left: 100px;
+            }
+            .heading{
+                margin-left:70px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <!-- Sidebar -->
+        <div class="app-wrapper">
+            @Html.Partial("_sidebar")
+            <main>
+
+        <!-- Main Content -->
+        <div class="main-content">
+
+            <!-- Project Selection Screen -->
+            <div class="project-selection" id="project-selection">
+            <div class="heading">
+                <h2>Select a Project</h2>
+            </div>
+                <div class="input">
+                <input type="text" id="project-id" class="form-control w-100 mx-auto" placeholder="Enter Project ID">
+                </div>
+                <div class="btndiv">
+                <button class="btn btn-primary mt-3" onclick="loadKanbanBoard()">View Kanban Board</button>
+                </div>
+            </div>
+
+            <!-- Kanban Board (Hidden Initially) -->
+            <div id="kanban-board" style="display: none;">
+                <h2>Kanban Board - <span id="board-title"></span></h2>
+                <div class="kanban-board">
+                    <div class="kanban-column " style="background-color:darkgoldenrod">
+                        <h5 class="backlog">Backlog</h5>
+                                <div class="kanban-card" style="background-color:darkgoldenrod">
+                            <p><strong>Create Labels</strong></p>
+                            <input type="checkbox"> Bug<br>
+                            <input type="checkbox"> Feature<br>
+                            <input type="checkbox"> Enhancement<br>
+                            <input type="checkbox"> Documentation<br>
+                            <input type="checkbox"> Examples
+                        </div>
+                                <div class="kanban-card" style="background-color:darkgoldenrod">
+                            <p><strong>Create Issue Template</strong></p>
+                            <input type="checkbox"> Bug Report<br>
+                            <input type="checkbox"> Feature Request
+                        </div>
+                    </div>
+
+                            <div class="kanban-column" style="background-color:darkkhaki">
+                        <h5 class="todo">To Do</h5>
+                                <div class="kanban-card" style="background-color:darkkhaki">
+                            <p><strong>Create First Milestone</strong></p>
+                        </div>
+                    </div>
+
+                            <div class="kanban-column" style=" background-color:darkseagreen">
+                        <h5 class="in-progress">In Progress</h5>
+                                <div class="kanban-card" style="background-color:darkseagreen">
+                            <p><strong>Update Readme</strong></p>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+                        </div>
+                    </div>
+
+                            <div class="kanban-column" style=" background-color:orange">
+                        <h5 class="done">Done</h5>
+                                <div class="kanban-card" style=" background-color:orange">
+                            <p><strong>Create Repo</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        </main>
+        </div>
+        <script>
+            function loadKanbanBoard() {
+                let projectId = document.getElementById("project-id").value.trim();
+
+                if (projectId === "") {
+                    alert("Please enter a valid Project ID.");
+                    return;
+                }
+
+                // Hide project selection and show the Kanban board
+                document.getElementById("project-selection").style.display = "none";
+                document.getElementById("kanban-board").style.display = "block";
+
+                // Set the board title dynamically
+                document.getElementById("board-title").innerText = "Project " + projectId;
+            }
+        </script>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+    </html>
+
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "ContainingType": "Jira_2._0.Controllers.UsersController",
+    "Method": "GetAdmins",
+    "RelativePath": "api/Users/admins",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Jira_2._0.Controllers.UsersController",
+    "Method": "GetAllUsersByRoles",
+    "RelativePath": "api/Users/all",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Jira_2._0.Controllers.UsersController",
+    "Method": "GetProjectManagers",
+    "RelativePath": "api/Users/projectmanagers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Jira_2._0.Controllers.UsersController",
+    "Method": "GetTeamMembers",
+    "RelativePath": "api/Users/teammembers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  }
+]

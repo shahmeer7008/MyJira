@@ -1,0 +1,47 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = null;
+
+}
+@{
+    @model List<Jira_2._0.Models.IssueModelWrapper>
+
+    @if (Model.Any())
+    {
+        <div class="results mt-4">
+            <h4>Results</h4>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Issue ID</th>
+                        <th>Project ID</th>
+                        <th>Title</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var issue in Model)
+                    {
+                        <tr>
+                            <td>@issue.IssueID</td>
+                            <td>@issue.IssueData.ProjectID</td>
+                            <td>@issue.IssueData.Title</td>
+                            <td>@issue.IssueData.Priority</td>
+                            <td>@issue.IssueData.Status</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="results mt-4">
+            <p>No issues found matching the search criteria.</p>
+        </div>
+    }
+
+}

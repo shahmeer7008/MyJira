@@ -1,0 +1,384 @@
+﻿
+@{
+    Layout = null;
+}
+
+@{
+    int Contribution = ViewBag.Contribution;
+    int IssuesResolved = ViewBag.IssuesResolved;
+    int PriorityPending = ViewBag.PriorityPending;
+    int ReportIssues = ViewBag.ReportIssues;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Team Member Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css"
+          integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg="
+          crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css?family=Raleway:400,300,600,800,900" rel="stylesheet" type="text/css">
+ 
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI="
+          crossorigin="anonymous" />
+    <link rel="stylesheet" href="/css/dashboard.css" />
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
+          integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0="
+          crossorigin="anonymous" />
+    <!-- jsvectormap -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css"
+          integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4="
+          crossorigin="anonymous" />
+
+    <style>
+        /* General Card Styling */
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: url('https://images.unsplash.com/photo-1627634777217-c864268db30c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+        }
+        .small-box {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+        }
+
+        /* Centered SVG Circle */
+        .progress-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+        }
+
+        /* SVG Styling */
+        .progress-svg {
+            transform: rotate(-90deg); /* Rotates so progress starts from top */
+        }
+
+        /* Background Circle */
+        .circle-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.2); /* Light background stroke */
+            stroke-width: 10;
+        }
+
+        /* Progress Bar Stroke */
+        .circle-progress {
+            fill: none;
+            stroke: white; /* White progress stroke */
+            stroke-width: 10;
+            stroke-linecap: round;
+            stroke-dasharray: 314; /* Full circle circumference (2 * π * 50) */
+            stroke-dashoffset: 314; /* Initially hidden */
+            transition: stroke-dashoffset 1.5s ease-in-out;
+        }
+
+        /* Percentage Text */
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            font-size: 22px;
+            color: white;
+        }
+
+
+        .metrics-carousel {
+            margin: 0 auto 20px auto;
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+            .metrics-carousel .carousel-item img {
+                width: 100%;
+                height: 300px;
+                object-fit: cover;
+                object-position: center;
+            }
+
+        .carousel-caption {
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 5px;
+            padding: 10px 15px;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            text-align: center;
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 5%;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            width: 2rem;
+            height: 2rem;
+        }
+
+        .card {
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-body {
+            padding: 15px;
+            position: relative;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -15px;
+            margin-left: -15px;
+        }
+
+        .col-lg-7 {
+            flex: 0 0 58.333333%;
+            max-width: 58.333333%;
+            padding: 15px;
+        }
+
+        .col-lg-5 {
+            flex: 0 0 41.666667%;
+            max-width: 41.666667%;
+            padding: 15px;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 300px !important;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+    <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+        <!--begin::App Wrapper-->
+        <div class="app-wrapper" style="color:white">
+        <div class="d-flex justify-content-center"> <h3 class="mb-0 text-center">Team Member Dashboard</h3></div>
+
+            <!--begin::Header-->
+            <!--end::Header-->
+            <!--begin::Sidebar-->
+           @Html.Partial("_MemberSidebar")
+            <!--end::Sidebar-->
+            <!--begin::App Main-->
+            <main class="app-main">
+                <!--begin::App Content Header-->
+                <div class="app-content-header mb-3">
+                    <!--begin::Container-->
+    <div class="container mt-4">
+        
+
+
+                    <div id="metricsCarousel" class="carousel slide metrics-carousel" data-bs-ride="carousel"
+                         data-bs-interval="3000">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="https://images.unsplash.com/photo-1579389083078-4e7018379f7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+                                     class="d-block w-100" alt="Team Collaboration">
+                                <div class="carousel-caption">
+                                    <h5>Team Collaboration</h5>
+                                    <p>Brainstorming ideas for better project outcomes</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+                                     class="d-block w-100" alt="Project Management">
+                                <div class="carousel-caption">
+                                    <h5>Project Tracking</h5>
+                                    <p>Monitoring progress and updating milestones</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+                                     class="d-block w-100" alt="Planning">
+                                <div class="carousel-caption">
+                                    <h5>Strategic Planning</h5>
+                                    <p>Creating effective business plans for success</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#metricsCarousel"
+                                data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#metricsCarousel"
+                                data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+
+                   
+
+                        <!-- /.row (main row) -->
+                    </div>
+                <!--end::App Content-->
+            </main>
+            <!--end::App Main-->
+            <!--begin::Footer-->
+            
+            <!--end::Footer-->
+        </div>
+        <!--end::App Wrapper-->
+        <!--begin::Script-->
+        <!--begin::Third Party Plugin(OverlayScrollbars)-->
+   
+        <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
+                integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ="
+                crossorigin="anonymous"></script>
+        <!--end::Third Party Plugin(OverlayScrollbars)--><!--begin::Required Plugin(popperjs for Bootstrap 5)-->
+        
+        <!--end::Required Plugin(popperjs for Bootstrap 5)--><!--begin::Required Plugin(Bootstrap 5)-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+                integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+                crossorigin="anonymous"></script>
+      
+        <script>
+            const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
+            const Default = {
+                scrollbarTheme: 'os-theme-light',
+                scrollbarAutoHide: 'leave',
+                scrollbarClickScroll: true,
+            };
+            document.addEventListener('DOMContentLoaded', function () {
+                const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+                if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
+                    OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+                        scrollbars: {
+                            theme: Default.scrollbarTheme,
+                            autoHide: Default.scrollbarAutoHide,
+                            clickScroll: Default.scrollbarClickScroll,
+                        },
+                    });
+                }
+            });
+        </script>
+      
+    <script>
+        // Wait for window load to ensure everything is ready
+        window.addEventListener('load', function () {
+            // 1. Member Contribution Chart
+            new Chart(document.getElementById('memberContributionChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['John', 'Jane', 'Mike', 'Sarah'],
+                    datasets: [{
+                        label: 'Issues Worked On',
+                        data: [12, 19, 8, 15],
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // 2. Issue Tracking Chart
+            new Chart(document.getElementById('issueTrackingChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pending', 'In Progress', 'Completed'],
+                    datasets: [{
+                        data: [15, 22, 30],
+                        backgroundColor: ['#ff6384', '#36a2eb', '#4bc0c0']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // 3. Issues Reported Chart
+            new Chart(document.getElementById('issuesReportedChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['John', 'Jane', 'Mike', 'Sarah'],
+                    datasets: [{
+                        label: 'Issues Reported',
+                        data: [5, 12, 7, 9],
+                        backgroundColor: 'rgba(75, 192, 192, 0.5)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        });
+    </script>
+    <script>
+        function animateProgress(circleId, percentId, finalValue) {
+            let progress = 0;
+            let step = finalValue / 50; // Controls speed
+            let interval = setInterval(() => {
+                if (progress >= finalValue) {
+                    clearInterval(interval);
+                    progress = finalValue;
+                } else {
+                    progress += step;
+                }
+
+                // Update percentage text
+                document.getElementById(percentId).innerText = Math.round(progress) + "%";
+
+                // Calculate stroke-dashoffset
+                let offset = 314 - (314 * (progress / 100)); // 314 is full circle
+                document.getElementById(circleId).style.strokeDashoffset = offset;
+
+            }, 30); // Adjust speed
+        }
+
+        // Start animations on page load
+        window.onload = function () {
+            animateProgress("circle1", "percent1", @Contribution);
+            animateProgress("circle2", "percent2", @IssuesResolved);
+            animateProgress("circle3", "percent3", @PriorityPending);
+            animateProgress("circle4", "percent4", @ReportIssues);
+        };
+    </script>
+    
+    <!-- Bootstrap JS (for collapse functionality) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+}

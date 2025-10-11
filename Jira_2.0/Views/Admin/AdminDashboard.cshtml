@@ -1,0 +1,538 @@
+﻿
+@{
+    Layout = null;
+}
+@{
+    int ProjectsCompleted = ViewBag.ProjectsCompleted;
+    int IssuesResolved = ViewBag.IssuesResolved;
+    int MembersProgress = ViewBag.MembersProgress;
+    int ManagerPerformance = ViewBag.ManagerPerformance;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Admin Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css"
+          integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg=" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css?family=Raleway:400,300,600,800,900" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/css/dashboard.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
+          integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0=" crossorigin="anonymous" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css"
+          integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4=" crossorigin="anonymous" />
+
+    <style>
+        body {
+            background-image: url('https://images.unsplash.com/photo-1627634777217-c864268db30c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+        }
+        .small-box {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+        }
+
+
+        .progress-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+        }
+
+
+        .progress-svg {
+            transform: rotate(-90deg);
+        }
+
+
+        .circle-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.2);
+            stroke-width: 10;
+        }
+
+
+        .circle-progress {
+            fill: none;
+            stroke: white;
+            stroke-width: 10;
+            stroke-linecap: round;
+            stroke-dasharray: 314;
+            stroke-dashoffset: 314;
+            transition: stroke-dashoffset 1.5s ease-in-out;
+        }
+
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            font-size: 22px;
+            color: white;
+        }
+
+        .metrics-carousel {
+            margin: 0 auto 20px auto;
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+            .metrics-carousel .carousel-item img {
+                width: 100%;
+                height: 300px;
+                object-fit: cover;
+                object-position: center;
+            }
+
+        .carousel-caption {
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 5px;
+            padding: 10px 15px;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            text-align: center;
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 5%;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            width: 2rem;
+            height: 2rem;
+        }
+    </style>
+</head>
+
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+
+    <div class="app-wrapper">
+        <div class="d-flex justify-content-center" style="color:white">
+            <h3 class="mb-0 text-center">Admin Dashboard</h3>
+        </div>
+
+
+        @Html.Partial("_sidebar");
+        <main class="app-main">
+
+
+
+            <div class="app-content-header mb-3">
+
+                <div class="container mt-4">
+
+                    <!--<div class="row">
+
+                        <div class="col-lg-3 col-6">
+
+                            <div class="small-box text-bg-primary p-3 rounded">
+                                <h5>Projects Completed</h5>
+                                <div class="progress-container">
+                                    <svg class="progress-svg" width="120" height="120">
+                                        <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
+                                        <circle class="circle-progress" id="circle1" cx="60" cy="60" r="50"></circle>
+                                    </svg>
+                                    <span class="progress-text" id="percent1">0%</span>
+                                </div>
+                                <h3 class="mt-2">@ProjectsCompleted</h3>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-3 col-6">
+                            <div class="small-box text-bg-success p-3 rounded">
+                                <h5>Issues Resolved</h5>
+                                <div class="progress-container">
+                                    <svg class="progress-svg" width="120" height="120">
+                                        <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
+                                        <circle class="circle-progress" id="circle2" cx="60" cy="60" r="50"></circle>
+                                    </svg>
+                                    <span class="progress-text" id="percent2">0%</span>
+                                </div>
+                                <h3 class="mt-2">@IssuesResolved%</h3>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-3 col-6">
+                            <div class="small-box text-bg-warning p-3 rounded">
+                                <h5 style="color:white">Members Progress</h5>
+                                <div class="progress-container">
+                                    <svg class="progress-svg" width="120" height="120">
+                                        <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
+                                        <circle class="circle-progress" id="circle3" cx="60" cy="60" r="50"></circle>
+                                    </svg>
+                                    <span class="progress-text" id="percent3">0%</span>
+                                </div>
+                                <h3 class="mt-2" style="color:white">@MembersProgress</h3>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-3 col-6">
+                            <div class="small-box text-bg-danger p-3 rounded">
+                                <h5>Avg PM Performance</h5>
+                                <div class="progress-container">
+                                    <svg class="progress-svg" width="120" height="120">
+                                        <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
+                                        <circle class="circle-progress" id="circle4" cx="60" cy="60" r="50"></circle>
+                                    </svg>
+                                    <span class="progress-text" id="percent4">0%</span>
+                                </div>
+                                <h3 class="mt-2">@ManagerPerformance</h3>
+                            </div>
+                        </div>
+                    </div>-->
+
+                    <div id="metricsCarousel" class="carousel slide metrics-carousel" data-bs-ride="carousel"
+                         data-bs-interval="3000">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="https://images.unsplash.com/photo-1579389083078-4e7018379f7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+                                     class="d-block w-100" alt="Team Collaboration">
+                                <div class="carousel-caption">
+                                    <h5>Team Collaboration</h5>
+                                    <p>Brainstorming ideas for better project outcomes</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+                                     class="d-block w-100" alt="Project Management">
+                                <div class="carousel-caption">
+                                    <h5>Project Tracking</h5>
+                                    <p>Monitoring progress and updating milestones</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+                                     class="d-block w-100" alt="Planning">
+                                <div class="carousel-caption">
+                                    <h5>Strategic Planning</h5>
+                                    <p>Creating effective business plans for success</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#metricsCarousel"
+                                data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#metricsCarousel"
+                                data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+
+                   
+
+                 </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
+            integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ=" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+            integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+            crossorigin="anonymous"></script>
+
+    
+
+    <script>
+        const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
+        const Default = {
+            scrollbarTheme: 'os-theme-light',
+            scrollbarAutoHide: 'leave',
+            scrollbarClickScroll: true,
+        };
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+            if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
+                OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+                    scrollbars: {
+                        theme: Default.scrollbarTheme,
+                        autoHide: Default.scrollbarAutoHide,
+                        clickScroll: Default.scrollbarClickScroll,
+                    },
+                });
+            }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"
+            integrity="sha256-ipiJrswvAR4VAx/th+6zWsdeYmVae0iJuiR+6OqHJHQ=" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
+            integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8=" crossorigin="anonymous"></script>
+
+    <script>
+        // Project Progress Chart (Bar Chart)
+        const progressOptions = {
+            series: [
+                {
+                    name: 'Completed',
+                    data: [45, 75, 60, 80, 90, 50, 70]
+                },
+                {
+                    name: 'In Progress',
+                    data: [30, 15, 30, 10, 5, 30, 20]
+                },
+                {
+                    name: 'Not Started',
+                    data: [25, 10, 10, 10, 5, 20, 10]
+                }
+            ],
+            chart: {
+                type: 'bar',
+                height: 350,
+                stacked: true,
+                stackType: '100%',
+                toolbar: {
+                    show: false
+                }
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: true,
+                },
+            },
+            colors: ['#20c997', '#fd7e14', '#6c757d'],
+            xaxis: {
+                categories: ['Website Redesign', 'Mobile App', 'CRM System', 'Marketing Campaign', 'Product Launch', 'HR Portal', 'Data Migration'],
+                title: {
+                    text: 'Progress Percentage'
+                }
+            },
+            yaxis: {
+                title: {
+                    text: 'Projects'
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function (val) {
+                        return val + "%"
+                    }
+                }
+            },
+            legend: {
+                position: 'top',
+                horizontalAlign: 'center'
+            }
+        };
+
+        const progressChart = new ApexCharts(
+            document.querySelector('#project-progress-chart'),
+            progressOptions
+        );
+        progressChart.render();
+
+        // Team Contributions Chart (Pie Chart)
+        const contributionsOptions = {
+            series: [25, 20, 18, 15, 12, 10],
+            chart: {
+                type: 'pie',
+                height: 350
+            },
+            labels: ['Alex Johnson', 'Sarah Williams', 'Michael Chen', 'Emma Davis', 'David Kim', 'Other Team'],
+            colors: ['#0d6efd', '#6610f2', '#6f42c1', '#d63384', '#fd7e14', '#20c997'],
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        width: 200
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }],
+            tooltip: {
+                y: {
+                    formatter: function (val) {
+                        return val + "%"
+                    }
+                }
+            }
+        };
+
+        const contributionsChart = new ApexCharts(
+            document.querySelector('#contributions-chart'),
+            contributionsOptions
+        );
+        contributionsChart.render();
+    </script>
+
+
+
+    <script>
+        // Issue Status Donut Chart
+        const statusChart = new ApexCharts(document.querySelector("#issue-status-chart"), {
+            series: [45, 30, 15, 10],
+            chart: {
+                type: 'donut',
+                height: 180,
+            },
+            labels: ['Open', 'In Progress', 'Resolved', 'Closed'],
+            colors: ['#ff6b6b', '#ffa502', '#2ed573', '#57606f'],
+            legend: {
+                position: 'bottom'
+            },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '70%',
+                        labels: {
+                            show: true,
+                            total: {
+                                show: true,
+                                label: 'Total Issues',
+                                color: '#ffffff'
+                            }
+                        }
+                    }
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        width: 200
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }]
+        });
+        statusChart.render();
+
+        // Issue Trend Line Chart
+        const trendChart = new ApexCharts(document.querySelector("#issue-trend-chart"), {
+            series: [{
+                name: "New Issues",
+                data: [12, 8, 15, 10, 7, 9, 14]
+            }, {
+                name: "Resolved Issues",
+                data: [5, 7, 10, 8, 12, 6, 9]
+            }],
+            chart: {
+                type: 'line',
+                height: 180,
+                toolbar: {
+                    show: false
+                }
+            },
+            colors: ['#ff6b6b', '#2ed573'],
+            stroke: {
+                curve: 'smooth',
+                width: 3
+            },
+            xaxis: {
+                categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                labels: {
+                    style: {
+                        colors: '#ffffff'
+                    }
+                }
+            },
+            yaxis: {
+                labels: {
+                    style: {
+                        colors: '#ffffff'
+                    }
+                }
+            },
+            legend: {
+                position: 'top',
+                labels: {
+                    colors: '#ffffff'
+                }
+            },
+            grid: {
+                borderColor: 'rgba(255, 255, 255, 0.1)'
+            },
+            tooltip: {
+                theme: 'dark'
+            }
+        });
+        trendChart.render();
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/js/jsvectormap.min.js"
+            integrity="sha256-/t1nN2956BT869E6H4V1dnt0X5pAQHPytli+1nTZm2Y=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/maps/world.js"
+            integrity="sha256-XPpPaZlU8S/HWf7FZLAncLg2SAkP8ScUTII89x9D3lY=" crossorigin="anonymous"></script>
+
+
+    <script>
+        function animateProgress(circleId, percentId, finalValue) {
+            let progress = 0;
+            let step = finalValue / 50;
+            let interval = setInterval(() => {
+                if (progress >= finalValue) {
+                    clearInterval(interval);
+                    progress = finalValue;
+                } else {
+                    progress += step;
+                }
+
+
+                document.getElementById(percentId).innerText = Math.round(progress) + "%";
+
+
+                let offset = 314 - (314 * (progress / 100));
+                document.getElementById(circleId).style.strokeDashoffset = offset;
+
+            }, 30);
+        }
+
+
+        window.onload = function () {
+            animateProgress("circle1", "percent1", @ProjectsCompleted);
+            animateProgress("circle2", "percent2", @IssuesResolved);
+            animateProgress("circle3", "percent3", @MembersProgress);
+            animateProgress("circle4", "percent4", @ManagerPerformance);
+        };
+    </script>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

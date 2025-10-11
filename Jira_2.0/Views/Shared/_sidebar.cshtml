@@ -1,0 +1,130 @@
+﻿<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+
+    <div class="sidebar-brand">
+
+
+        <a href="@Url.Action("AdminDashboard", "Admin")" class="brand-link">
+
+            <img src="/Jira.jpeg" alt="Jira Logo" class="brand-image opacity-75 shadow  rounded-circle" />
+
+            <span class="brand-text fw-light">Jira 2.0</span>
+
+        </a>
+
+
+    </div>
+
+    <div class="sidebar-wrapper">
+        <nav class="mt-2">
+
+            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu"
+                data-accordion="false">
+
+                <!--<li class="nav-item">
+                    <a href="@Url.Action("viewKanban", "Admin")" class="nav-link">
+                        <i class="nav-icon bi bi-palette"></i>
+                        <p>KanBan Boards</p>
+                    </a>
+                </li>-->
+
+               
+                        <li class="nav-item">
+                            <a href="@Url.Action("Projects", "Admin" )" class="nav-link">
+                             <i class="nav-icon bi bi-arrow-up-short"></i>
+                                <p>Projects Details</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("CreateProject", "Admin" )" class="nav-link">
+                        <i class="nav-icon bi bi-building-fill"></i>
+                                <p>Create Project</p>
+                            </a>
+                        </li>
+                   
+
+                <li class="nav-item">
+                    <a href="@Url.Action("SearchIssues", "Admin")" class="nav-link">
+                        <i class="nav-icon bi bi-search"></i>
+                        <p>
+                            Search Issues
+                        </p>
+                    </a>
+
+                </li>
+
+                <li class="nav-item">
+                    <a href="@Url.Action("UsersRecord", "Admin")" class="nav-link">
+                        <i class="nav-icon bi bi-clipboard-fill"></i>
+                        <p>
+                            Users Record
+                        </p>
+                    </a>
+
+                </li>
+                
+                <li class="nav-item">
+                    <a href="@Url.Action("ClaimRequests", "Admin")" class="nav-link">
+                        <i class="nav-icon bi bi-people"></i>
+                        <p>
+                            Pending Registration Requests 
+                        </p>
+                    </a>
+
+                </li>
+
+                 </li> -->
+                <li class="nav-item">
+                    <a href="@Url.Action("Notifications", "Admin")" class="nav-link">
+                        <i class="nav-icon bi bi-bell"></i>
+                        <p>
+                            Notifications
+
+                        </p>
+                    </a>
+
+                </li>
+
+                <!--<li class="nav-item">
+                    <a href="/Admin/AdminProfile" class="nav-link">
+                        <i class="nav-icon bi bi-person-square"></i>
+                        <p>
+                            Profile
+
+                        </p>
+                    </a>
+
+                </li>-->
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="Identity" asp-page="/Account/Logout">
+                        <i class="nav-icon bi bi-box-arrow-right"></i>
+                        <p>Log Out</p>
+                    </a>
+                </li>
+                 <!---<li class="nav-item">
+                     <a href="@Url.Action("PerformanceReports", "Admin")" class="nav-link">
+                         <i class="nav-icon bi bi-clipboard-pulse"></i>
+                         <p>
+                             Performance Reports
+
+                         </p>
+                     </a>-->
+
+                <!---<li class="nav-item">
+                    <a href="@Url.Action("ProjectsReports", "Admin")" class="nav-link">
+                        <i class="nav-icon bi bi-clipboard2-data"></i>
+                        <p>
+                            Projects Reports
+
+                        </p>
+                    </a>
+
+                </li>-->
+            </ul>
+
+
+        </nav>
+    </div>
+
+</aside>
+

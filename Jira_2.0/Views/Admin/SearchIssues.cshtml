@@ -1,0 +1,112 @@
+﻿@model List<Jira_2._0.Models.IssueModelWrapper>
+@{
+    Layout = null;
+}
+@{
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Search Issues</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+        <link rel="stylesheet" href="/css/dashboard.css" />
+        <style>
+            body {
+                background-image: url('https://images.unsplash.com/photo-1627634777217-c864268db30c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+                background-size: cover;
+                background-position: center;
+                height: 100vh;
+                margin: 0;
+            }
+           .content{
+               margin-left:100px;
+               color:white;
+           }
+           .input,.select{
+               margin-left:150px;
+               width:350px;
+           }
+           .heading{
+               margin-left:200px;
+           }
+           .btndiv{
+               margin-left:270px;
+           }
+        </style>
+    </head>
+    <body>
+
+        <!-- Sidebar -->
+        <div class="app-wrapper">
+            @Html.Partial("_sidebar")
+            <main>
+        <!-- Content Area -->
+        <div class="content">
+        <div class="heading">
+            <h2>Search Issues</h2>
+        </div>
+                    <form id="searchForm">
+                        <div class="mb-3 input">
+                            <label class="form-label">Project ID</label>
+                            <input type="text" name="projectId" class="form-control">
+                        </div>
+                        <div class="mb-3 select">
+                            <label class="form-label">Priority</label>
+                            <select name="priority" class="form-select">
+                                <option value="">-- Select --</option>
+                                <option>Low</option>
+                                <option>Medium</option>
+                                <option>High</option>
+                                <option>Critical</option>
+                            </select>
+                        </div>
+                        <div class="mb-3 select">
+                            <label class="form-label">Status</label>
+                            <select name="status" class="form-select">
+                                <option value="">-- Select --</option>
+                                <option>Assigned</option>
+                                <option>In Progress</option>
+                                <option>Resolved</option>
+                            </select>
+                        </div>
+                        <div class="btndiv">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </div>
+                    </form>
+
+                    <!-- 🔹 Container for search results -->
+                    <div id="resultsContainer"></div>
+
+        </div>
+        </main>
+        </div>
+        <script>
+            document.getElementById('searchForm').addEventListener('submit', function (e) {
+                e.preventDefault(); // Prevent full page reload
+
+                const formData = new FormData(this);
+                fetch('/Admin/SearchIssues', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error("Failed to fetch results.");
+                    return response.text();
+                })
+                .then(html => {
+                    document.getElementById('resultsContainer').innerHTML = html;
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    document.getElementById('resultsContainer').innerHTML = "<p class='text-danger'>Something went wrong.</p>";
+                });
+            });
+        </script>
+
+    </body>
+    </html>
+
+}

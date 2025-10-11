@@ -1,0 +1,35 @@
+﻿services:
+  projectdb:
+    container_name: projectdb
+    build:
+      context: .
+      dockerfile: Dockerfile.sqlserver
+    environment:
+      MSSQL_SA_PASSWORD: "Dotnet@123"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    networks:
+      - MyJira
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+      - "C:/Users/PMLS:/var/opt/mssql/backup"
+
+  jira_20:
+    container_name: jira_20
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:8080"
+    depends_on:
+      - projectdb
+    networks:
+      - MyJira
+
+networks:
+  MyJira:
+    driver: bridge
+
+volumes:
+  sqlserver_data:

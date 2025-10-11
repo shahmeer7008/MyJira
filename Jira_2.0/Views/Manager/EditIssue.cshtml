@@ -1,0 +1,105 @@
+﻿@model IssueModelWrapper;
+@{
+    Layout = null;
+}
+@{
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Edit Issue</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+        <link rel="stylesheet" href="/css/dashboard.css" />
+        <style>
+            body {
+                display: flex;
+              
+               
+            }
+           
+            .form-label {
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="app-wrapper">
+            @Html.Partial("_ManagerSidebar")
+
+            <main class="app-main">
+                <div class="content">
+                    <div class="card shadow-sm" style="width:1000px">
+                        <div class="card-header bg-primary text-white">
+                            <h5>Edit Issue ID #@Model.IssueID</h5>
+                        </div>
+                       
+
+                        <div class="card-body">
+                            <form method="post" action="EditIssue">
+                                @* Hidden input for ID *@
+                                <input type="hidden" name="IssueID" value="@Model.IssueID" />
+
+                                <div class="mb-3">
+                                    <label class="form-label">Project ID</label>
+                                    <input type="text" name="IssueData.ProjectID" value="@Model.IssueData.ProjectID" />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Issue Title</label>
+                                    <input type="text" class="form-control" name="IssueData.Title" value="@Model.IssueData.Title" required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Description</label>
+                                    <textarea class="form-control" name="IssueData.Description" rows="4" required>@Model.IssueData.Description</textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Type</label>
+                                    <select class="form-select" name="IssueData.Type">
+                                        <option value="Bug" selected="@("Bug" == Model.IssueData.Type)">Bug</option>
+                                        <option value="Feature" selected="@("Feature" == Model.IssueData.Type)">Feature</option>
+                                        <option value="Improvement" selected="@("Improvement" == Model.IssueData.Type)">Improvement</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-select" name="IssueData.Status">
+                                       
+                                        <option value="In Progress" selected="@("In Progress" == Model.IssueData.Status)">In Progress</option>
+                                        <option value="Resolved" selected="@("Resolved" == Model.IssueData.Status)">Resolved</option>
+                                        <option value="Assigned" selected="@("Assigned" == Model.IssueData.Status)">Assigned</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Priority</label>
+                                    <select class="form-select" name="IssueData.Priority">
+                                        <option value="Low" selected="@("Low" == Model.IssueData.Priority)">Low</option>
+                                        <option value="Medium" selected="@("Medium" == Model.IssueData.Priority)">Medium</option>
+                                        <option value="High" selected="@("High" == Model.IssueData.Priority)">High</option>
+                                        <option value="Critical" selected="@("Critical" == Model.IssueData.Priority)">Critical</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Assigned To</label>
+                                    <input type="text" class="form-control" name="IssueData.Assigned" value="@Model.IssueData.Assigned" required />
+                                </div>
+
+                                <button type="submit" class="btn btn-success">Save Changes</button>
+                                <a href="@Url.Action("Issues", "Manager")" class="btn btn-secondary">Cancel</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+        
+
+    </body>
+    </html>
+
+}
